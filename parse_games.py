@@ -56,4 +56,3 @@ def run():
 
     df = pd.DataFrame(game_info, columns=cols)
     df.to_pickle('Data/pickles/game_data')
-    print(df)

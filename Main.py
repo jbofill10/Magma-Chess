@@ -1,4 +1,4 @@
-import parse_games
+import parse_games, Preprocessing
 import os
 import pandas as pd
 
@@ -12,7 +12,9 @@ def main():
     else:
         games = pd.read_pickle('Data/pickles/game_data')
 
-    print(games)
+    # print(games)
+
+    Preprocessing.run(games)
 
 
 if __name__ == '__main__':
