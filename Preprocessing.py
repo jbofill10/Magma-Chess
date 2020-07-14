@@ -10,6 +10,9 @@ import sys
 
 
 def run(df):
+    csv = open('positions.csv', 'w')
+    csv.write('id,position,result\n')
+
     sql = SQL()
     pp = pprint.PrettyPrinter(indent=4)
     df.drop(['White', 'Black'], inplace=True, axis=1)
@@ -20,7 +23,10 @@ def run(df):
     count = 0
     # Count of each position
     index = 0
-    preprocessed_data = []
+
+    # Batch flushing due to memory
+    flush_counter = 0
+
     board = chess.Board()
     for i in tqdm(df['gamePGN']):
         result = df['Result'].iloc[count]
@@ -47,16 +53,19 @@ def run(df):
 
                 sys.exit(0)
             b = convert_to_int(board)
-            sql.add_position(index, str(b), result)
+            csv.write(f'{index}, {b}, {result}\n')
+            flush_counter += 1
 
+            if flush_counter == 50000:
+                flush_counter = 0
+                csv.flush()
             index += 1
 
             move_counter += 1
     count += 1
 
-    preproc_df = pd.DataFrame(preprocessed_data, columns=['position', 'result'])
-
-    pd.to_pickle(preproc_df, 'Data/pickles/preprocessed_data')
+    csv.flush()
+    csv.close()
 
 
 def convert_to_int(board):

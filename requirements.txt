@@ -2,6 +2,5 @@ pandas
 numpy
 tqdm
 python-chess
-PyMySQL==0.9.3
+psycopg2-binary==2.8.5
 python-dotenv
-cryptography
