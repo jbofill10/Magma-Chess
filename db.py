@@ -6,6 +6,7 @@ dotenv.load_dotenv()
 class SQL:
 
     connection = None
+    commit_count = 0
 
     def __init__(self):
         try:
@@ -29,7 +30,9 @@ class SQL:
                 cursor.execute(
                     "INSERT INTO dataset(`id`, `position`, `result`) VALUES ({}, '{}', {});".format(index, position, result)
                 )
-
-                self.connection.commit()
+                self.commit_count += 1
+                if self.commit_count == 1000000:
+                    self.commit_count = 0
+                    self.connection.commit()
             except Exception as e:
                 print(f'Error inserting into SQL\n\n{e}')
