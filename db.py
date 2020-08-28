@@ -1,5 +1,5 @@
 import psycopg2
-import dotenv, os
+import dotenv, os, sys
 dotenv.load_dotenv()
 
 
@@ -26,13 +26,15 @@ class SQL:
 
             try:
                 cursor.execute(
-                    "INSERT INTO magma(id, position, result) VALUES ({}, '{}', {});".format(index, position, result)
+                    "INSERT INTO train(id, position, result) VALUES ({}, '{}', '{}');".format(index, position, result)
                 )
 
                 self.commit_count += 1
-                if self.commit_count == 50000:
+                if self.commit_count == 100000:
                     self.commit_count = 0
                     self.connection.commit()
 
             except Exception as e:
                 print(f'Error inserting into PostgreSQL\n\n{e}')
+                print("INSERT INTO train(id, position, result) VALUES ({}, '{}', '{}');".format(index, position, result))
+                sys.exit(0)

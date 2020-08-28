@@ -13,6 +13,7 @@ def main():
         games = pd.read_pickle('Data/pickles/game_data')
 
     # print(games)
+    games = games[games.Result != '*']
 
     Preprocessing.run(games)
 

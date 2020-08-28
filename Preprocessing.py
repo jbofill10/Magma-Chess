@@ -10,8 +10,6 @@ import sys
 
 
 def run(df):
-    csv = open('positions.csv', 'w')
-    csv.write('id,position,result\n')
 
     sql = SQL()
     pp = pprint.PrettyPrinter(indent=4)
@@ -53,19 +51,13 @@ def run(df):
 
                 sys.exit(0)
             b = convert_to_int(board)
-            csv.write(f'{index}, {b}, {result}\n')
-            flush_counter += 1
 
-            if flush_counter == 50000:
-                flush_counter = 0
-                csv.flush()
+            sql.add_position(index, str(b.tolist()).replace("[", "{").replace("]", "}").replace(".0", ""), result)
+
             index += 1
 
             move_counter += 1
-    count += 1
-
-    csv.flush()
-    csv.close()
+        count += 1
 
 
 def convert_to_int(board):
