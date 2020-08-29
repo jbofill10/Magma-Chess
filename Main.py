@@ -1,6 +1,7 @@
 import parse_games, Preprocessing
 import os
 import pandas as pd
+from db import PSQL
 
 
 def main():
@@ -16,7 +17,6 @@ def main():
     games = games[games.Result != '*']
 
     Preprocessing.run(games)
-
 
 if __name__ == '__main__':
     main()

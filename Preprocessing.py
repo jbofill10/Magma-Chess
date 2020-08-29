@@ -1,5 +1,5 @@
 from tqdm import tqdm
-from db import SQL
+from db import PSQL
 
 import numpy as np
 import pandas as pd
@@ -11,7 +11,7 @@ import sys
 
 def run(df):
 
-    sql = SQL()
+    sql = PSQL()
     pp = pprint.PrettyPrinter(indent=4)
     df.drop(['White', 'Black'], inplace=True, axis=1)
 
