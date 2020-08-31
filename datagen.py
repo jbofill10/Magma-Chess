@@ -18,5 +18,4 @@ class DataGenerator(keras.utils.Sequence):
 
     def __getitem__(self, index):
         idxs = self.idx[index * self.batch_size:(index + 1) * self.batch_size]
-
         return self.db.read_records_at(idxs)

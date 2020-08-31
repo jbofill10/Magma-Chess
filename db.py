@@ -50,6 +50,7 @@ class PSQL:
                 print("Row count successfully queried")
                 print(row_count)
                 return row_count[0]
+                # return 225300000
 
             except Exception as e:
                 print("Not able to get row count!")
