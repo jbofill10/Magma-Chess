@@ -4,5 +4,5 @@ tqdm
 python-chess
 psycopg2-binary==2.8.5
 python-dotenv
-tensorflow
+tensorflow-gpu
 keras
