@@ -2,7 +2,13 @@ import os, pickle
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
+
 import tensorflow as tf
+import tensorflow.compat.v1 as tf
+
+tf.disable_v2_behavior()  #disable for tensorFlow V2
+physical_devices = tf.config.experimental.list_physical_devices('GPU')
+tf.config.experimental.set_memory_growth(physical_devices[0], True)
 from datagen import DataGenerator
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, Dense, Flatten
@@ -11,10 +17,8 @@ from tensorflow.keras.layers import Conv2D, Dense, Flatten
 def train():
 
     model = Sequential([
-        Conv2D(filters=8, kernel_size=3, activation='relu', input_shape=(8, 8, 2)),
-        # Conv2D(filters=16, kernel_size=3, activation='relu'),
-        # Conv2D(filters=32, kernel_size=3, activation='relu'),
-        # Conv2D(filters=64, kernel_size=2, activation='relu'),
+        Conv2D(filters=256, kernel_size=3, activation='relu', input_shape=(2, 8, 8), data_format='channels_first'),
+        Conv2D(filters=256, kernel_size=3, activation='relu', input_shape=(2, 8, 8), data_format='channels_first'),
         Flatten(),
         Dense(3, activation='softmax')
 
@@ -29,8 +33,8 @@ def train():
     )
 
     model.summary()
-    DataGenerator(batch_size=25).__getitem__(0)
-    history = model.fit(DataGenerator(batch_size=120), verbose=1, epochs=100, callbacks=callback)
+
+    history = model.fit(DataGenerator(batch_size=9021), verbose=1, epochs=20, callbacks=[callback])
 
     if not os.path.isfile('Data/model/model_results'):
         model_hist = history.history
