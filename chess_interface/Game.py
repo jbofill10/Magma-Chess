@@ -11,7 +11,6 @@ class ChessGame:
     def make_move(self, move):
         self.prev_turn = 'white' if self.board.turn == chess.WHITE else 'black'
         self.board.push_san(move)
-        print(self.prev_turn)
 
     def get_legal_moves(self):
         return list(self.board.legal_moves)
@@ -33,3 +32,6 @@ class ChessGame:
 
     def get_fen(self):
         return self.board.fen()
+
+    def curr_turn(self):
+        return self.board.turn
