@@ -17,8 +17,8 @@ from tensorflow.keras.layers import Conv2D, Dense, Flatten
 def train():
 
     model = Sequential([
-        Conv2D(filters=256, kernel_size=3, activation='relu', input_shape=(2, 8, 8), data_format='channels_first'),
-        Conv2D(filters=256, kernel_size=3, activation='relu', input_shape=(2, 8, 8), data_format='channels_first'),
+        Conv2D(filters=256, kernel_size=3, activation='relu', input_shape=(7, 8, 8), data_format='channels_first'),
+        Conv2D(filters=256, kernel_size=3, activation='relu'),
         Flatten(),
         Dense(3, activation='softmax')
 
@@ -34,7 +34,7 @@ def train():
 
     model.summary()
 
-    history = model.fit(DataGenerator(batch_size=9021), verbose=1, epochs=20, callbacks=[callback])
+    history = model.fit(DataGenerator(batch_size=32), verbose=1, epochs=3, callbacks=[callback])
 
     if not os.path.isfile('Data/model/model_results'):
         model_hist = history.history

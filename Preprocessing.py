@@ -24,20 +24,20 @@ def run(df):
     df3 = df[2*split:(3*split)]
     df4 = df[3*split::]
 
-    t1 = threading.Thread(target=parse_games, kwargs=dict(df=df1))
-    t2 = threading.Thread(target=parse_games, kwargs=dict(df=df2))
-    t3 = threading.Thread(target=parse_games, kwargs=dict(df=df3))
-    t4 = threading.Thread(target=parse_games, kwargs=dict(df=df4))
-
-    t1.start()
-    t2.start()
-    t3.start()
-    t4.start()
-    # parse_games(df)
+    # t1 = threading.Thread(target=parse_games, kwargs=dict(df=df1))
+    # t2 = threading.Thread(target=parse_games, kwargs=dict(df=df2))
+    # t3 = threading.Thread(target=parse_games, kwargs=dict(df=df3))
+    # t4 = threading.Thread(target=parse_games, kwargs=dict(df=df4))
+    #
+    # t1.start()
+    # t2.start()
+    # t3.start()
+    # t4.start()
+    parse_games(df)
 
 
 def parse_games(df):
-    sql = PSQL(list_size=len(df))
+    sql = PSQL()
     # Tracks game result
     count = 0
     board = chess.Board()
@@ -88,6 +88,8 @@ def parse_games(df):
 
             move_counter += 1
         count += 1
+
+    sql.last_commit()
 
 
 def convert_to_int(board, white_kcastle, black_kcastle, white_qcastle, black_qcastle):

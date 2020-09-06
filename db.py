@@ -2,7 +2,7 @@ import psycopg2
 import dotenv, os
 dotenv.load_dotenv()
 import numpy
-
+import pprint
 
 class PSQL:
 
@@ -10,12 +10,10 @@ class PSQL:
     cursor = None
     commit_count = 0
 
-    def __init__(self, list_size=None):
+    def __init__(self):
         try:
             self.connection = psycopg2.connect(os.getenv('SQL_URL'))
             self.cursor = self.connection.cursor()
-            self.list_size = list_size
-            self.total_commits = 0
 
             print('Connected to PostgreSQL!')
 
@@ -32,13 +30,9 @@ class PSQL:
                 )
 
                 self.commit_count += 1
-                self.total_commits += 1
 
-                if self.commit_count == 100000:
+                if self.commit_count == 500000:
                     self.commit_count = 0
-                    self.connection.commit()
-
-                if self.total_commits == self.list_size:
                     self.connection.commit()
 
             except Exception as e:
@@ -61,7 +55,7 @@ class PSQL:
             #     print("Not able to get row count!")
             #     print(e)
 
-            return 225300000
+            return 225319280
 
     def read_records_at(self, idxs):
         with self.connection.cursor() as cursor:
@@ -77,10 +71,10 @@ class PSQL:
                     x.append(i[0])
                     temp_y = i[1]
 
-                    if temp_y == '1':
+                    if temp_y == 1:
                         y.append([1, 0, 0])
 
-                    elif temp_y == '1/2-1/2':
+                    elif temp_y == 0:
                         y.append([0, 1, 0])
 
                     else:
@@ -88,9 +82,12 @@ class PSQL:
 
                 x = numpy.array(x)
                 y = numpy.array(y)
+
                 return x, y
 
             except Exception as e:
                 print('Unable to retrieve training batch!')
                 print(e)
 
+    def last_commit(self):
+        self.connection.commit()
