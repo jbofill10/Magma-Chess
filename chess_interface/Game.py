@@ -8,9 +8,12 @@ class ChessGame:
     def __init__(self):
         self.board = chess.Board()
 
-    def make_move(self, move):
+    def make_move(self, move, format='san'):
         self.prev_turn = 'white' if self.board.turn == chess.WHITE else 'black'
-        self.board.push_san(move)
+        if format == 'san':
+            self.board.push_san(move)
+        else:
+            self.board.push_uci(move)
 
     def get_legal_moves(self):
         return list(self.board.legal_moves)
