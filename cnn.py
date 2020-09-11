@@ -12,36 +12,52 @@ from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Conv2D, Dense, Flatten, BatchNormalization
 
 
-def train():
+class CovNet:
+    
+    def __init__(self):
+        model = Sequential([
+            Conv2D(filters=256, kernel_size=3, activation='relu', input_shape=(7, 8, 8), data_format='channels_first'),
+            # BatchNormalization(),
+            Conv2D(filters=256, kernel_size=3, activation='relu'),
+            Flatten(),
+            Dense(3, activation='softmax')
 
-    model = Sequential([
-        Conv2D(filters=256, kernel_size=3, activation='relu', input_shape=(7, 8, 8), data_format='channels_first'),
-        # BatchNormalization(),
-        Conv2D(filters=256, kernel_size=3, activation='relu'),
-        Flatten(),
-        Dense(3, activation='softmax')
+        ])
 
-    ])
+        self.callback = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=6)
+        self.checkpoint = tf.keras.callbacks.ModelCheckpoint(filepath='model/checkpoint/weights.{epoch:02d}-{loss:.2f}.hdf5',
+                                                             monitor='loss',
+                                                             save_best_only=True,
+                                                             save_freq='epoch')
 
-    callback = tf.keras.callbacks.EarlyStopping(monitor='loss', patience=6)
+        model.compile(
+            optimizer='adam',
+            loss='categorical_crossentropy',
+            metrics=['accuracy']
+        )
 
-    model.compile(
-        optimizer='adam',
-        loss='categorical_crossentropy',
-        metrics=['accuracy']
-    )
+        self.model = model
 
-    model.summary()
+        if os.path.isfile('Data/model/model_weights.h5'):
 
-    history = model.fit(DataGenerator(batch_size=200), verbose=1, epochs=1, callbacks=[callback])
+            model.load_weights('Data/model/model_weights.h5')
+        else:
 
-    if not os.path.isfile('Data/model/model_results'):
+            model.summary()
+
+    def train(self):
+    
+        history = self.model.fit(DataGenerator(batch_size=25), verbose=1, epochs=7, callbacks=[self.callback])
+
         model_hist = history.history
 
         with open('Data/model_results', 'wb') as file:
             pickle.dump(model_hist, file)
-            model.save_weights('Data/model/model_weights')
+            self.model.save_weights('Data/model/model_weights.h5')
 
+    def predict(self, x):
 
-if __name__ == '__main__':
-    train()
+        y = self.model.predict(x)
+
+        return y[0].tolist()
+

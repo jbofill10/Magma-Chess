@@ -1,6 +1,10 @@
 from node import Node
-import copy, random, math
+from cnn import CovNet
+from Preprocessing import convert_to_int
 
+import copy, random, math, sys
+import numpy as np
+import chess
 
 class MonteCarloTreeSearch:
 
@@ -8,6 +12,7 @@ class MonteCarloTreeSearch:
         self.board = board
         self.tree = Node(state=board)
         self.depth = depth
+        self.model = CovNet()
 
     def choose(self, node):
         unexplored = [child for child in node.children if not child.expanded]
@@ -41,9 +46,17 @@ class MonteCarloTreeSearch:
         child = node.add_child(move=str(move), state=board, parent=node)
 
         # NN softmax output
-        reward = random.uniform(0.00, 1.00)
+        board_state = self.process_board(child, temp_board.get_pychess_board())
+        prediction = self.model.predict(np.reshape(board_state, (1, 7, 8, 8)))
 
-        self.back_propagate(child, reward)
+        if prediction.index(max(prediction)) == 0:
+            reward = prediction[0]
+        elif prediction.index(max(prediction)) == 1:
+            reward = -prediction[1]
+        else:
+            reward = -prediction[2]
+
+        # self.back_propagate(child, reward)
         self.simulate(child, temp_board, depth - 1)
 
         node.reward += reward
@@ -77,4 +90,28 @@ class MonteCarloTreeSearch:
 
         overall_best_node = self.choose(self.tree)
 
+        print([l.reward for l in self.tree.children])
+
         return str(overall_best_node.move)
+
+    def process_board(self, node, board):
+        white_kcastle = False
+        black_kcastle = False
+        white_qcastle = False
+        black_qcastle = False
+
+        move = chess.Move.from_uci(node.move)
+
+        if board.is_kingside_castling(move):
+            if board.turn:
+                white_kcastle = True
+            else:
+                black_kcastle = True
+
+        if board.is_queenside_castling(move):
+            if board.turn:
+                white_qcastle = True
+            else:
+                black_qcastle = True
+
+        return convert_to_int(board, white_kcastle, black_kcastle, white_qcastle, black_qcastle)
