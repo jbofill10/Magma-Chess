@@ -52,17 +52,20 @@ class MonteCarloTreeSearch:
         if prediction.index(max(prediction)) == 0:
             reward = prediction[0]
         elif prediction.index(max(prediction)) == 1:
-            reward = -prediction[1]
+            reward = prediction[1]
         else:
-            reward = -prediction[2]
+            reward = prediction[2]
 
-        # self.back_propagate(child, reward)
+        self.back_propagate(child, reward)
+        
         self.simulate(child, temp_board, depth - 1)
 
-        node.reward += reward
-
     def back_propagate(self, node, reward):
+        if node.parent is None:
+            node.reward += reward
+            return
         node.reward += reward
+        self.back_propagate(node=node.parent, reward=reward)
 
     def uct(self, parent, child):
 
