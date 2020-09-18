@@ -1,5 +1,4 @@
 from node import Node
-from cnn import CovNet
 from Preprocessing import convert_to_int
 
 import copy, random, math, sys
@@ -8,11 +7,11 @@ import chess
 
 class MonteCarloTreeSearch:
 
-    def __init__(self, board, depth=5):
+    def __init__(self, board, model,depth=5):
         self.board = board
         self.tree = Node(state=board)
         self.depth = depth
-        self.model = CovNet()
+        self.model = model
 
     def choose(self, node):
         unexplored = [child for child in node.children if not child.expanded]

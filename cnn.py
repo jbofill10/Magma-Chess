@@ -41,9 +41,6 @@ class CovNet:
         if os.path.isfile('Data/model/model_weights.h5'):
 
             model.load_weights('Data/model/model_weights.h5')
-        else:
-
-            model.summary()
 
     def train(self):
     

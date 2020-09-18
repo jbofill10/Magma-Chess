@@ -1,5 +1,6 @@
 from mcts import MonteCarloTreeSearch
 from chess_interface.Game import ChessGame
+from cnn import CovNet
 from Preprocessing import convert_to_int
 import sys
 
@@ -8,6 +9,7 @@ def game():
 
     board = ChessGame()
     board.show_board()
+    model = CovNet()
     player_color = 1 if sys.argv[1] else 0
     while not board.is_game_over():
         if board.curr_turn() == player_color:
@@ -21,7 +23,7 @@ def game():
                 print("Unable to make move!")
                 print(error)
         else:
-            move = MonteCarloTreeSearch(board, depth=30).run_mcts(200)
+            move = MonteCarloTreeSearch(board=board, model=model, depth=30).run_mcts(200)
             print(chr(27) + "[2J")
             board.make_move(move, format='uci')
             board.show_board()
