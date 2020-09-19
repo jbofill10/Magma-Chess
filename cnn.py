@@ -44,7 +44,7 @@ class CovNet:
 
     def train(self):
     
-        history = self.model.fit(DataGenerator(batch_size=25), verbose=1, epochs=7, callbacks=[self.callback])
+        history = self.model.fit(DataGenerator(batch_size=5), verbose=1, epochs=20, callbacks=[self.callback, self.checkpoint])
 
         model_hist = history.history
 
