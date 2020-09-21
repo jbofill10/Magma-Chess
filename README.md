@@ -10,4 +10,6 @@ Chess AI using supervised learning techniques
 
 # Model's Decision Making Process
 * Python-chess get's all possible legal moves and uses them to create an expansion in the Monte Carlo Tree Search
+* MCTS' "terminal node" in this case is a 18 deep node, since actually reaching a terminal state in a real chess game is too large of a search.
+* MCTS iterates 200 times per move
 * The Policy network will evaulate these lines to a certain depth which will in turn lead to a move being made
